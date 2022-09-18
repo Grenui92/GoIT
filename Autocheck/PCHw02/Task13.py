@@ -1,14 +1,10 @@
-message = input("Введите сообщение: ")
-offset = int(input("Введите сдвиг: "))
+from string import *
+message = 'Hello my little friends!'
+offset = 37
 encoded_message = ""
+u, l = ascii_uppercase, ascii_lowercase
 for ch in message:
-    new_char = ch
     if ch.isalpha():
-        if ch.isupper():
-            pos = (ord(ch) - ord('A') + offset) % 26
-            new_char = chr(pos + ord("A"))
-        elif ch.islower():
-            pos = (ord(ch) - ord('a') + offset) % 26 
-            new_char = chr(pos + ord("a"))
-    encoded_message += new_char
+        ch = u[(u.index(ch)+offset)%len(u)] if ch.isupper() else l[(l.index(ch)+offset)%len(l)]
+    encoded_message += ch
 print(encoded_message)
