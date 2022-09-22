@@ -1,10 +1,8 @@
-def snail(snail_map):
-    mtrx = snail_map
+def snail(mtrx):
     n, m = len(mtrx), len(mtrx[0])
     result = []
     dl_stroki, vs_stolba = m - 1, n - 1
-    i, j, s = 0, -1, 0
-    flag = False
+    i, j = 0, -1
     cnt = 0
     if n == 1 or m == 1:
         for i in range(n):
@@ -39,12 +37,12 @@ def snail(snail_map):
             result.append(mtrx[i][j])
         vs_stolba -= 2
         dl_stroki -= 2
-
-    for row in mtrx:
-        for c in row:
-            print(str(c).ljust(3), end=' ')
-        print()
     return result
+    # for row in mtrx:
+    #     for c in row:
+    #         print(str(c).ljust(3), end=' ')
+    #     print()
+    # return result
 
 print(snail([[1,2,3], [8,9,4], [7,6,5]]))
 print(snail([[1,2,3], [4,5,6], [7,8,9]]))
