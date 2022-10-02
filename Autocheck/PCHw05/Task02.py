@@ -21,16 +21,23 @@ articles_dict = [
     },
 ]
 
-def find_articles(key: str, letter_case=False) -> dict:
+def find_articles(key: str, letter_case=False) -> list:
 	result = []
-	for i in articles_dict:
+	for dictionary in articles_dict:
+		# if letter_case:
+		# 	if key in str(dictionary.values()):
+		# 		result.append(dictionary)
+		# else:
+		# 	if key.lower() in str(dictionary.values()).lower():
+		# 		result.append(dictionary)
 		if letter_case:
-			if key in str(i.values()):
-				result.append(i)
+			if str(dictionary.values()).find(key) >= 0:
+				result.append(dictionary)
 		else:
-			if key.lower() in str(i.values()).lower():
-				result.append(i)
+			if str(dictionary.values()).lower().find(key.lower()) >= 0:
+				result.append(dictionary)
 	return result
+
 
 a = find_articles('Ocean')
 for i in a:

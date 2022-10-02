@@ -1,19 +1,14 @@
-# fh = open('test_result1.txt', 'w')
-# fh.write('Hello World.')
-# fh.write('\nLol kek. Where is my "Hello World?"')
-# fh.close()
-# k = open('test_result1.txt', 'w')
-# k.write('\nSo what?')
-# k.write('\nWhere are you?')
-# k.close()
-# l = open('test_result1.txt', 'a+')
-# l.write('\nis it True?')
-# l.write('\nThen begin!')
-#
-# print(l.read())
+# import base64
+# s = 'Hello World!!!'
+# #sb = s.encode('utf-8')
+# bas64 = base64.b64encode(s)
+# d_bas64 = bas64.decode('utf-8')
+# basi64 = base64.b64decode(bas64)
+# print(s, bas64, d_bas64, basi64)
 
-text = ' Hello'
-nums = [1, 2 , 210, 100]
-print(bytes(nums))
-print(b'Hello ')
-print(text.encode())
+import shutil
+
+
+archive_name = shutil.make_archive('backup', 'zip', 'Test_folder')
+print(archive_name)
+shutil.unpack_archive(archive_name, 'Test_unpack_folder')

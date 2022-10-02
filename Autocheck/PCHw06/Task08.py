@@ -5,10 +5,23 @@ def save_applicant_data(source, output):
 		for j in i:
 			string.append(str(i[j]))
 		result.append(','.join(string)+'\n')
+	print(result)
 	with open(output, 'w') as students:
 		students.writelines(result)
-	
-
+def save_applicant_data(source, output):
+    with open(output, 'w') as fh:
+        students_list = []
+        for i in source:
+            students_list.append(str(i['name']) + ',')
+            students_list.append(str(i['specialty']) + ',')
+            students_list.append(str(i['math']) + ',')
+            students_list.append(str(i['lang']) + ',')
+            students_list.append(str(i['eng']) + '\n')
+            print(students_list)
+        fh.writelines(students_list)
+with open('Task08.txt') as file:
+    for i in file.readlines():
+        print(i)
 
 
 slovar = [
@@ -29,4 +42,4 @@ slovar = [
         "eng": 185,},
 ]
 
-save_applicant_data(slovar, 'Task08students.txt')
+save_applicant_data(slovar, 'Task08.txt')
