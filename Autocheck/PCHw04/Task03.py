@@ -1,5 +1,15 @@
 def format_ingredients(items):
+	return f"{', '.join(items[:-1])} and {items[-1]}" if len(items) > 1 else ''.join(items)
+
+
+def format_ingredients(items):
 	return ', '.join(items[:-1]) + ' and ' + items[-1] if len(items) > 1 else ''.join(items)
+
+def format_ingredients(items):
+	if len(items) <= 1:
+		return ''.join(items)
+	else:
+		return ', '.join(items[:-1]) + ' and ' + items[-1]
 
 
 def format_ingredients(items):
