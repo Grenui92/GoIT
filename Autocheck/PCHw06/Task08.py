@@ -42,4 +42,4 @@ slovar = [
         "eng": 185,},
 ]
 
-save_applicant_data(slovar, 'Task08.txt')
+save_applicant_data(slovar, 'Task08.py.txt')

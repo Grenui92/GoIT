@@ -1,8 +1,0 @@
-setup.py
-Clean_folder/__init_.py
-Clean_folder/clean.py
-clean_floders.egg-info/PKG-INFO
-clean_floders.egg-info/SOURCES.txt
-clean_floders.egg-info/dependency_links.txt
-clean_floders.egg-info/entry_points.txt
-clean_floders.egg-info/top_level.txt
