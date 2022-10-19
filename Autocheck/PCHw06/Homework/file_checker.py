@@ -12,11 +12,6 @@ def main():
     absolute_folders = new_absolute_folders_create()
     translate_map = new_translate_map()
     main_path = file_path()
-    for folder in absolute_folders:  # Создаем папки название которых соответствуют ключам в absolute_folders
-        try:
-            os.mkdir(f'{main_path}/{folder}')
-        except FileExistsError:
-            continue
     know, dont_know, files = file_checking(main_path)  # Начинаем дискотеку - вызываем основную функцию.
     print(f"Это расширения файлов, которые я знаю: {[i for i in absolute_folders.values() if i]}, а это известные расширения, которые я встретил только что:"
           f" {know}")
@@ -29,7 +24,7 @@ def file_path() -> str:
     """Получаем аргумент вызова который указывает на папку, сортировку которой мы будем производить. В ней, в этой папке, пройдет вся
 	работа."""
 
-    return "Downloads"  # sys.argv[1]
+    return "Downloads" #sys.argv[1]
 
 
 def normalize(name: str) -> str:
@@ -68,24 +63,28 @@ def file_checking(path) -> (list, list, dict):
             # Ну тут все просто - итерируемся по словарю, проверяем по значениям есть ли среди них на суффикс
             # а потом при совпадении прописываем соответствующий ключ в путь, потому что мы создавали папки
             # в соответствии с ключами
+
             for k, v in absolute_folders.items():
-                if item.suffix[1:] in absolute_folders['archives']:
-                    try:
-                        shutil.unpack_archive(item, extract_dir=f'{main_path}/archives/{item.stem}', format=f'{item.suffix[1:]}')
-                    except RuntimeError:
-                        print(f"Извините, этот архив {item.name} требует пароль.")
-                    item.rename(pathlib.Path(f'{main_path}/archives/{new_name}{item.suffix}'))
-                    files_list.setdefault('archives', []).append(f'{new_name}{item.suffix}')
-                    break
-                elif item.suffix[1:] in v:
-                    item.rename(pathlib.Path(f'{main_path}/{k}/{new_name}{item.suffix}'))
-                    i_know.add(item.suffix)
-                    files_list.setdefault(k, []).append(f'{new_name}{item.suffix}')
-                    break
+                if item.suffix[1:] in v:
+                    create_new_folder_(k)
+                    if k == 'archives':
+                        try:
+                            shutil.unpack_archive(item, extract_dir=f'{main_path}/archives/{item.stem}', format=f'{item.suffix[1:]}')
+                        except RuntimeError:
+                            print(f"Извините, этот архив {item.name} требует пароль.")
+                        item.rename(pathlib.Path(f'{main_path}/archives/{new_name}{item.suffix}'))
+                        files_list.setdefault('archives', []).append(f'{new_name}{item.suffix}')
+                        break
+                    else:
+                        item.rename(pathlib.Path(f'{main_path}/{k}/{new_name}{item.suffix}'))
+                        i_know.add(item.suffix)
+                        files_list.setdefault(k, []).append(f'{new_name}{item.suffix}')
+                        break
             # А вот это очумительная штука - если у вас в цикле не сработал Брейк - то после цикла обязательно выполняется else. Да да
             # else работает не только в паре с if. Этот элс для того чтоб добавить файл в папку others если при итерации по словарю
             # не было совпадений.
             else:
+                create_new_folder_("others")
                 item.rename(pathlib.Path(f'{main_path}/others/{new_name}{item.suffix}'))
                 i_dont_know.add(item.suffix)
                 files_list.setdefault('others', []).append(f'{new_name}{item.suffix}')
@@ -135,6 +134,13 @@ def new_translate_map() -> dict:
                       1095: 'ch', 1096: 'sh', 1097: 'sh', 1098: '', 1099: 'i', 1100: '', 1101: 'e', 1102: 'yu',
                       1103: 'ya', 1105: 'yo', 105: 'i', 1031: 'ji', 1169: 'g'}
     return translated_map
+
+def create_new_folder_(folder_name):
+    try:
+        os.mkdir(f'{main_path}/{folder_name}')
+    except FileExistsError:
+        pass
+
 
 
 if __name__ == '__main__':
