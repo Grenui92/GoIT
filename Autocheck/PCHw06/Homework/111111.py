@@ -4,26 +4,32 @@ import pathlib
 import os
 
 
-class Pinkz():
-    asd = 2
+def main():
+    """Здесь будут создаваться папки в которые будут складываться файлы, запускаться основная функция сортировки и переименования."""
 
+    global absolute_folders, translate_map, main_path
 
-def first_start(folders: dict, path_to_create: str):
-    """Здесь будут создаваться папки в которые будут складываться файлы, запускаться основная функция."""
-
-    for folder in folders:  # Создаем папки название которых соответствуют ключам в absolute_folders
+    absolute_folders = new_absolute_folders_create()
+    translate_map = new_translate_map()
+    main_path = file_path()
+    for folder in absolute_folders:  # Создаем папки название которых соответствуют ключам в absolute_folders
         try:
-            os.mkdir(f'{path_to_create}/{folder}')
+            os.mkdir(f'{main_path}/{folder}')
         except FileExistsError:
             continue
-    return file_checking(path_to_create)  # Начинаем дискотеку - вызываем основную функцию.
+    know, dont_know, files = file_checking(main_path)  # Начинаем дискотеку - вызываем основную функцию.
+    print(f"Это расширения файлов, которые я знаю: {[i for i in absolute_folders.values() if i]}, а это известные расширения, которые я встретил только что:"
+          f" {know}")
+    print(f"А эти расширения я не знаю, потому отправил их в папку 'others': {dont_know}")
+    for directs in files:
+        print(directs, *files[directs], sep='\n\t')
 
 
 def file_path() -> str:
     """Получаем аргумент вызова который указывает на папку, сортировку которой мы будем производить. В ней, в этой папке, пройдет вся
-	работа."""
+    работа."""
 
-    return sys.argv[1]
+    return "Downloads"  # sys.argv[1]
 
 
 def normalize(name: str) -> str:
@@ -33,20 +39,20 @@ def normalize(name: str) -> str:
 
     # Делаем транслитерацию кириллицы в латиницу
     name = name.translate(translate_map)
-    # Заменяем все кроме цифр и латиницы на _. Может это можно сделать выше, но я и так устал создавать translate_map.
+    # Заменяем все кроме цифр и латиницы на _. Может это можно сделать выше, но я и так устал создавать translate_map, н ну его нафиг - транслейт_мап своими
+    # руками - єто геморой.
     for i in name:
         if not i.isalnum():
             name = name.replace(i, '_')
     return name
 
 
-def file_checking(path):
-    """Основная функция сортировки
-
-    в которой будем бежать по файлам, рекурсировать, если будут вложенные папки, и выполнять сортировку"""
+def file_checking(path) -> (list, list, dict):
+    """Основная функция сортировки в которой будем бежать по файлам, рекурсировать, если будут вложенные папки, и выполнять сортировку"""
 
     i_know = set()
     i_dont_know = set()
+    files_list = {}
     p = pathlib.Path(path)
 
     for item in p.iterdir():
@@ -69,10 +75,12 @@ def file_checking(path):
                     except RuntimeError:
                         print(f"Извините, этот архив {item.name} требует пароль.")
                     item.rename(pathlib.Path(f'{main_path}/archives/{new_name}{item.suffix}'))
+                    files_list.setdefault('archives', []).append(f'{new_name}{item.suffix}')
                     break
                 elif item.suffix[1:] in v:
                     item.rename(pathlib.Path(f'{main_path}/{k}/{new_name}{item.suffix}'))
                     i_know.add(item.suffix)
+                    files_list.setdefault(k, []).append(f'{new_name}{item.suffix}')
                     break
             # А вот это очумительная штука - если у вас в цикле не сработал Брейк - то после цикла обязательно выполняется else. Да да
             # else работает не только в паре с if. Этот элс для того чтоб добавить файл в папку others если при итерации по словарю
@@ -80,6 +88,7 @@ def file_checking(path):
             else:
                 item.rename(pathlib.Path(f'{main_path}/others/{new_name}{item.suffix}'))
                 i_dont_know.add(item.suffix)
+                files_list.setdefault('others', []).append(f'{new_name}{item.suffix}')
     for item in p.iterdir():
         if item.name not in absolute_folders:
             # Ну а тут уже опять проходимся по оставшимся папкам, если они есть в словаре исключений - пропускаем, если нет - удаляем.
@@ -89,7 +98,7 @@ def file_checking(path):
             except OSError:
                 file_checking(main_path)
 
-    return f'Форматы которые я знаю {i_know}, которые я не знаю {i_dont_know}'
+    return i_know, i_dont_know, files_list
 
 
 def new_absolute_folders_create() -> dict:
@@ -124,12 +133,9 @@ def new_translate_map() -> dict:
                       1079: 'z', 1080: 'i', 1081: 'j', 1082: 'k', 1083: 'l', 1084: 'm', 1085: 'n', 1086: 'o',
                       1087: 'p', 1088: 'r', 1089: 's', 1090: 't', 1091: 'u', 1092: 'f', 1093: 'h', 1094: 'ts',
                       1095: 'ch', 1096: 'sh', 1097: 'sh', 1098: '', 1099: 'i', 1100: '', 1101: 'e', 1102: 'yu',
-                      1103: 'ya', 1105: 'yo'}
+                      1103: 'ya', 1105: 'yo', 105: 'i', 1031: 'ji', 1169: 'g'}
     return translated_map
 
 
 if __name__ == '__main__':
-    absolute_folders = new_absolute_folders_create()
-    translate_map = new_translate_map()
-    main_path = file_path()
-    first_start(absolute_folders, main_path)
+    main()

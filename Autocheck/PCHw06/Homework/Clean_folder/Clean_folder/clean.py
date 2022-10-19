@@ -18,7 +18,8 @@ def main():
 		except FileExistsError:
 			continue
 	know, dont_know, files = file_checking(main_path)  # Начинаем дискотеку - вызываем основную функцию.
-	print(f"Это расширения файлов, которые я знаю: {[i for i in absolute_folders.values()]}, а это известные расширения, которые я встретил только что: {know}")
+	print(f"Это расширения файлов, которые я знаю: {[i for i in absolute_folders.values() if i]}, а это известные расширения, которые я встретил только что:"
+		  f" {know}")
 	print(f"А эти расширения я не знаю, потому отправил их в папку 'others': {dont_know}")
 	for directs in files:
 		print(directs, *files[directs], sep = '\n\t')
@@ -28,7 +29,7 @@ def file_path() -> str:
 	"""Получаем аргумент вызова который указывает на папку, сортировку которой мы будем производить. В ней, в этой папке, пройдет вся
 	работа."""
 	
-	return sys.argv[1]
+	return "Downloads" #sys.argv[1]
 
 
 def normalize(name: str) -> str:
