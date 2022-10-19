@@ -5,7 +5,7 @@ import os
 
 
 def main():
-	"""Здесь будут создаваться папки в которые будут складываться файлы, запускаться основная функция."""
+	"""Здесь будут создаваться папки в которые будут складываться файлы, запускаться основная функция сортировки и переименования."""
 	
 	global absolute_folders, translate_map, main_path
 	
@@ -18,8 +18,8 @@ def main():
 		except FileExistsError:
 			continue
 	know, dont_know, files = file_checking(main_path)  # Начинаем дискотеку - вызываем основную функцию.
-	print(f"I know this files files extensions : {know}")
-	print(f"I don't know this files files extensions : {dont_know}")
+	print(f"Это расширения файлов, которые я знаю: {[i for i in absolute_folders.values()]}, а это известные расширения, которые я встретил только что: {know}")
+	print(f"А эти расширения я не знаю, потому отправил их в папку 'others': {dont_know}")
 	for directs in files:
 		print(directs, *files[directs], sep = '\n\t')
 
@@ -132,7 +132,7 @@ def new_translate_map() -> dict:
 	                  1079: 'z', 1080: 'i', 1081: 'j', 1082: 'k', 1083: 'l', 1084: 'm', 1085: 'n', 1086: 'o',
 	                  1087: 'p', 1088: 'r', 1089: 's', 1090: 't', 1091: 'u', 1092: 'f', 1093: 'h', 1094: 'ts',
 	                  1095: 'ch', 1096: 'sh', 1097: 'sh', 1098: '', 1099: 'i', 1100: '', 1101: 'e', 1102: 'yu',
-	                  1103: 'ya', 1105: 'yo'}
+	                  1103: 'ya', 1105: 'yo', 105: 'i', 1031: 'ji', 1169: 'g'}
 	return translated_map
 
 
