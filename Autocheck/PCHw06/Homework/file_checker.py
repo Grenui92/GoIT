@@ -9,22 +9,36 @@ def main():
 
     global absolute_folders, translate_map, main_path
 
+    main_path = file_path()
     absolute_folders = new_absolute_folders_create()
     translate_map = new_translate_map()
-    main_path = file_path()
     know, dont_know, files = file_checking(main_path)  # Начинаем дискотеку - вызываем основную функцию.
+    show_results(files=files, know=know)
+
+
+def show_results(files: dict, know: set):
+    """Выведение результата всех операций. Списков расширений."""
+
     print(f"Это расширения файлов, которые я знаю: {[i for i in absolute_folders.values() if i]}, а это известные расширения, которые я встретил только что:"
           f" {know}")
-    print(f"А эти расширения я не знаю, потому отправил их в папку 'others': {dont_know}")
+    print(f"А эти расширения я не знаю, потому отправил их в папку 'others': {absolute_folders['others']}")
     for directs in files:
         print(directs, *files[directs], sep='\n\t')
 
 
 def file_path() -> str:
-    """Получаем аргумент вызова который указывает на папку, сортировку которой мы будем производить. В ней, в этой папке, пройдет вся
+    """Получаем аргумент вызова, который указывает на папку, сортировку которой мы будем производить. В ней, в этой папке, пройдет вся
 	работа."""
-
-    return "Downloads" #sys.argv[1]
+    try:
+        b = sys.argv[1]
+        path = pathlib.Path(b)
+        if not path.is_dir():
+            sys.exit(f"{b} не указывает на папку. Возможно это название файла. Запустите скрипт вновь и проверьте указанный путь к папке.")
+        return b
+    except IndexError as err:
+        sys.exit("Вы не указали путь. Запустите скрипт вновь.")
+    except:
+        sys.exit("Произошла неизвестная ошибка. Запустите скрипт вновь.")
 
 
 def normalize(name: str) -> str:
