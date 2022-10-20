@@ -66,9 +66,9 @@ def file_checking(path) -> (list, list, dict):
 
     for item in p.iterdir():
         if item.is_dir() and item.name not in absolute_folders:
-            file_checking(f'{p}/{item.name}')
+            file_checking(os.path.join(p, item.name))
             new_name = normalize(item.name)
-            item.rename(pathlib.Path(f'{p}/{new_name}'))  # Переименовывает неправильные папки. Можно бы и удалять где-то тут
+            item.rename(os.path.join(p, new_name))  # Переименовывает неправильные папки. Можно бы и удалять где-то тут
         # сразу пустые папки, но у меня периодически выскакивает ошибка из-за переименования не правильных имен папок и потом удаление
         # не получается потому что ищется файл со старым именем, потому удаление добавил в конце функции отдельным циклом. А вообще нужно
         # ли здесь переименование? Я же потом эти папки все равно удалю.
@@ -83,14 +83,14 @@ def file_checking(path) -> (list, list, dict):
                     create_new_folder_(k)
                     if k == 'archives':
                         try:
-                            shutil.unpack_archive(item, extract_dir=f'{main_path}/archives/{item.stem}', format=f'{item.suffix[1:]}')
+                            shutil.unpack_archive(item, extract_dir=os.path.join(main_path, "archives", item.stem), format=f'{item.suffix[1:]}')
                         except RuntimeError:
                             print(f"Извините, этот архив {item.name} требует пароль.")
-                        item.rename(pathlib.Path(f'{main_path}/archives/{new_name}{item.suffix}'))
+                        item.rename(os.path.join(main_path, "archives", f"{new_name}{item.suffix}"))
                         files_list.setdefault('archives', []).append(f'{new_name}{item.suffix}')
                         break
                     else:
-                        item.rename(pathlib.Path(f'{main_path}/{k}/{new_name}{item.suffix}'))
+                        item.rename(os.path.join(main_path, k, f"{new_name}{item.suffix}"))
                         i_know.add(item.suffix)
                         files_list.setdefault(k, []).append(f'{new_name}{item.suffix}')
                         break
@@ -99,7 +99,7 @@ def file_checking(path) -> (list, list, dict):
             # не было совпадений.
             else:
                 create_new_folder_("others")
-                item.rename(pathlib.Path(f'{main_path}/others/{new_name}{item.suffix}'))
+                item.rename(os.path.join(main_path, "others", f"{new_name}{item.suffix}"))
                 i_dont_know.add(item.suffix)
                 files_list.setdefault('others', []).append(f'{new_name}{item.suffix}')
     for item in p.iterdir():
@@ -151,7 +151,7 @@ def new_translate_map() -> dict:
 
 def create_new_folder_(folder_name):
     try:
-        os.mkdir(f'{main_path}/{folder_name}')
+        os.mkdir(os.path.join(main_path, folder_name))
     except FileExistsError:
         pass
 
