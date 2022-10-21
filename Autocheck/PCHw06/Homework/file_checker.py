@@ -12,7 +12,7 @@ def main():
     main_path = file_path()
     absolute_folders = new_absolute_folders_create()
     translate_map = new_translate_map()
-    know, dont_know, files = file_checking(main_path)  # Начинаем дискотеку - вызываем основную функцию.
+    know, files = file_checking(main_path)  # Начинаем дискотеку - вызываем основную функцию.
     show_results(files=files, know=know)
 
 
@@ -49,7 +49,7 @@ def normalize(name: str) -> str:
     # Делаем транслитерацию кириллицы в латиницу
     name = name.translate(translate_map)
     # Заменяем все кроме цифр и латиницы на _. Может это можно сделать выше, но я и так устал создавать translate_map, н ну его нафиг - транслейт_мап своими
-    # руками - єто геморой.
+    # руками - это геморой.
     for i in name:
         if not i.isalnum():
             name = name.replace(i, '_')
@@ -60,7 +60,6 @@ def file_checking(path) -> (list, list, dict):
     """Основная функция сортировки в которой будем бежать по файлам, рекурсировать, если будут вложенные папки, и выполнять сортировку"""
 
     i_know = set()
-    i_dont_know = set()
     files_list = {}
     p = pathlib.Path(path)
 
@@ -100,7 +99,6 @@ def file_checking(path) -> (list, list, dict):
             else:
                 create_new_folder_("others")
                 item.rename(os.path.join(main_path, "others", f"{new_name}{item.suffix}"))
-                i_dont_know.add(item.suffix)
                 files_list.setdefault('others', []).append(f'{new_name}{item.suffix}')
     for item in p.iterdir():
         if item.name not in absolute_folders:
@@ -111,7 +109,7 @@ def file_checking(path) -> (list, list, dict):
             except OSError:
                 file_checking(main_path)
 
-    return i_know, i_dont_know, files_list
+    return i_know, files_list
 
 
 def new_absolute_folders_create() -> dict:

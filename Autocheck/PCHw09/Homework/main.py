@@ -1,7 +1,6 @@
 def input_error(func):
     def errors():
-        try:
-            func()
+        pass
     return errors()
 def main():
     telephone_book = {}

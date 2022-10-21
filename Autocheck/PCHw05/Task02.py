@@ -24,17 +24,11 @@ articles_dict = [
 def find_articles(key: str, letter_case=False) -> list:
 	result = []
 	for dictionary in articles_dict:
-		# if letter_case:
-		# 	if key in str(dictionary.values()):
-		# 		result.append(dictionary)
-		# else:
-		# 	if key.lower() in str(dictionary.values()).lower():
-		# 		result.append(dictionary)
 		if letter_case:
-			if str(dictionary.values()).find(key) >= 0:
+			if str(dictionary.values()).find(key) != -1:
 				result.append(dictionary)
 		else:
-			if str(dictionary.values()).lower().find(key.lower()) >= 0:
+			if str(dictionary.values()).lower().find(key.lower()) != -1:
 				result.append(dictionary)
 	return result
 
