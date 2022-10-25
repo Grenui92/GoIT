@@ -1,45 +1,101 @@
 import shutil
-import sys
+from datetime import datetime
 import pathlib
 import os
+import argparse
 
 
 def main():
     """Здесь будут создаваться папки в которые будут складываться файлы, запускаться основная функция сортировки и переименования."""
 
-    global absolute_folders, translate_map, main_path
+    global absolute_folders, translate_map, main_path, i_know, files_list
 
+    i_know = set()
+    files_list = {}
     main_path = file_path()
     absolute_folders = new_absolute_folders_create()
     translate_map = new_translate_map()
-    know, files = file_checking(main_path)  # Начинаем дискотеку - вызываем основную функцию.
-    show_results(files=files, know=know)
 
 
-def show_results(files: dict, know: set):
-    """Выведение результата всех операций. Списков расширений."""
-
-    print(f"Это расширения файлов, которые я знаю: {[i for i in absolute_folders.values() if i]}, а это известные расширения, которые я встретил только что:"
-          f" {know}")
-    print(f"А эти расширения я не знаю, потому отправил их в папку 'others': {absolute_folders['others']}")
-    for directs in files:
-        print(directs, *files[directs], sep='\n\t')
-
+    file_checking(main_path)  # Начинаем дискотеку - вызываем основную функцию.
+    show_results(files=files_list, know=i_know)
 
 def file_path() -> str:
     """Получаем аргумент вызова, который указывает на папку, сортировку которой мы будем производить. В ней, в этой папке, пройдет вся
 	работа."""
-    try:
-        b = sys.argv[1]
-        path = pathlib.Path(b)
-        if not path.is_dir():
-            sys.exit(f"{b} не указывает на папку. Возможно это название файла. Запустите скрипт вновь и проверьте указанный путь к папке.")
-        return b
-    except IndexError as err:
-        sys.exit("Вы не указали путь. Запустите скрипт вновь.")
-    except:
-        sys.exit("Произошла неизвестная ошибка. Запустите скрипт вновь.")
 
+
+    arguments = argparse.ArgumentParser(description="Enter folder")
+    arguments.add_argument("source", help="Enter folder name")
+    name = arguments.parse_args().source
+    if not pathlib.Path(name).exists():
+        print("Указанный путь не существует")
+        exit()
+    return name
+
+
+def file_checking(path) -> (list, list, dict):
+    """Основная функция сортировки в которой будем бежать по файлам, рекурсировать, если будут вложенные папки, и выполнять сортировку"""
+
+
+    p = pathlib.Path(path)
+
+    for item in p.iterdir():
+        if item.is_dir() and item.name not in absolute_folders:
+            if_is_dir(p=p, item=item)
+            delete_other_dir(p=p)
+        elif item.is_file():
+            if_is_file(p=p, item=item)
+
+
+
+
+    return i_know, files_list
+
+def if_is_dir(p, item):
+    file_checking(os.path.join(p, item.name))
+    new_name = normalize(item.name)
+    item.rename(os.path.join(p, new_name))
+
+def if_is_file(p, item):
+    new_name = normalize(item.stem)
+    now_time = datetime.now().time().microsecond
+    for k, v in absolute_folders.items():
+        if item.suffix[1:] in v:
+            create_new_folder_(k)
+            if k == 'archives':
+                try:
+                    shutil.unpack_archive(item, extract_dir=os.path.join(main_path, "archives", item.stem), format=f'{item.suffix[1:]}')
+                except RuntimeError:
+                    print(f"Извините, этот архив {item.name} требует пароль.")
+                file_renamer(item=item, main_path=main_path, k=k, new_name=new_name, now_time=now_time)
+                files_list.setdefault('archives', []).append(f'{new_name}{item.suffix}')
+                break
+            else:
+                file_renamer(item=item, main_path=main_path, k=k, new_name=new_name, now_time=now_time)
+                i_know.add(item.suffix)
+                files_list.setdefault(k, []).append(f'{new_name}{item.suffix}')
+                break
+    else:
+        create_new_folder_("others")
+        file_renamer(item=item, main_path=main_path, k="others", new_name=new_name, now_time=now_time)
+        files_list.setdefault("others", []).append(f'{new_name}{item.suffix}')
+        absolute_folders.setdefault("others", []).append(item.suffix)
+
+def delete_other_dir(p):
+    for item in p.iterdir():
+        try:
+            item.rmdir()
+        except FileNotFoundError:
+            pass
+        except OSError:
+            pass
+
+def file_renamer(item, main_path, k, new_name, now_time):
+    try:
+        item.rename(os.path.join(main_path, k, f"{new_name}{item.suffix}"))
+    except FileExistsError:
+        item.rename(os.path.join(main_path, k, f"{new_name}{now_time}{item.suffix}"))
 
 def normalize(name: str) -> str:
     """По идее должна вызываться из функции file_checking() весте с именем, которое мы будем обрабатывать.
@@ -54,62 +110,6 @@ def normalize(name: str) -> str:
         if not i.isalnum():
             name = name.replace(i, '_')
     return name
-
-
-def file_checking(path) -> (list, list, dict):
-    """Основная функция сортировки в которой будем бежать по файлам, рекурсировать, если будут вложенные папки, и выполнять сортировку"""
-
-    i_know = set()
-    files_list = {}
-    p = pathlib.Path(path)
-
-    for item in p.iterdir():
-        if item.is_dir() and item.name not in absolute_folders:
-            file_checking(os.path.join(p, item.name))
-            new_name = normalize(item.name)
-            item.rename(os.path.join(p, new_name))  # Переименовывает неправильные папки. Можно бы и удалять где-то тут
-        # сразу пустые папки, но у меня периодически выскакивает ошибка из-за переименования не правильных имен папок и потом удаление
-        # не получается потому что ищется файл со старым именем, потому удаление добавил в конце функции отдельным циклом. А вообще нужно
-        # ли здесь переименование? Я же потом эти папки все равно удалю.
-        elif item.is_file():
-            new_name = normalize(item.stem)  # Отправляем файл на нормализацию имени
-            # Ну тут все просто - итерируемся по словарю, проверяем по значениям есть ли среди них на суффикс
-            # а потом при совпадении прописываем соответствующий ключ в путь, потому что мы создавали папки
-            # в соответствии с ключами
-
-            for k, v in absolute_folders.items():
-                if item.suffix[1:] in v:
-                    create_new_folder_(k)
-                    if k == 'archives':
-                        try:
-                            shutil.unpack_archive(item, extract_dir=os.path.join(main_path, "archives", item.stem), format=f'{item.suffix[1:]}')
-                        except RuntimeError:
-                            print(f"Извините, этот архив {item.name} требует пароль.")
-                        item.rename(os.path.join(main_path, "archives", f"{new_name}{item.suffix}"))
-                        files_list.setdefault('archives', []).append(f'{new_name}{item.suffix}')
-                        break
-                    else:
-                        item.rename(os.path.join(main_path, k, f"{new_name}{item.suffix}"))
-                        i_know.add(item.suffix)
-                        files_list.setdefault(k, []).append(f'{new_name}{item.suffix}')
-                        break
-            # А вот это очумительная штука - если у вас в цикле не сработал Брейк - то после цикла обязательно выполняется else. Да да
-            # else работает не только в паре с if. Этот элс для того чтоб добавить файл в папку others если при итерации по словарю
-            # не было совпадений.
-            else:
-                create_new_folder_("others")
-                item.rename(os.path.join(main_path, "others", f"{new_name}{item.suffix}"))
-                files_list.setdefault('others', []).append(f'{new_name}{item.suffix}')
-    for item in p.iterdir():
-        if item.name not in absolute_folders:
-            # Ну а тут уже опять проходимся по оставшимся папкам, если они есть в словаре исключений - пропускаем, если нет - удаляем.
-            # try добавлен на случай если не все файлы удалось удалить из папки - если папка не пустая, то rmdir() вызывает ошибку
-            try:
-                item.rmdir()
-            except OSError:
-                file_checking(main_path)
-
-    return i_know, files_list
 
 
 def new_absolute_folders_create() -> dict:
@@ -153,6 +153,14 @@ def create_new_folder_(folder_name):
     except FileExistsError:
         pass
 
+def show_results(files: dict, know: set):
+    """Выведение результата всех операций. Списков расширений."""
+
+    print(f"Это расширения файлов, которые я знаю: {[i for i in absolute_folders.values() if i]}, а это известные расширения, которые я встретил только что:"
+          f" {know}")
+    print(f"А эти расширения я не знаю, потому отправил их в папку 'others': {absolute_folders['others']}")
+    for directs in files:
+        print(directs, *files[directs], sep='\n\t')
 
 
 if __name__ == '__main__':
