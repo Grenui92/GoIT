@@ -27,6 +27,7 @@ def main():
             print(f"I dont know this command '{command}'")
 
 
+@input_error
 def get_functional(command: str):
     return commands[command]
 
