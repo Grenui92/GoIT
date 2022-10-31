@@ -2,8 +2,6 @@ def input_error(func):
     def inner(user_data):
         try:
             return func(user_data)
-        except TypeError:
-            return "To much arguments for this command"
         except IndexError:
             return "Not enough values. You forgot to enter name or phone number."
         except KeyError:
@@ -17,19 +15,19 @@ def main():
     while True:
         user_text = input()
         command, user_data = refactor_user_text(user_text)
-        if command in commands:
+        try:
             result = get_functional(command)(user_data)
-            if result:
-                print(result)
-            else:
-                continue
-        else:
-            print(f"I dont know this command '{command}'")
+        except TypeError:
+            print(f"Такой команды не существует '{command}'")
+            continue
+        if result:
+            print(result)
 
 
 @input_error
 def get_functional(command: str):
-    return commands[command]
+    a = commands[command]
+    return a
 
 
 @input_error
@@ -54,7 +52,7 @@ def add_contact(user_info: list):
 
 @input_error
 def change(user_info: list):
-    del contacts[user_info[0]]
+    a = contacts[user_info[0]]
     contacts[user_info[0]] = int(user_info[1])
 
 
