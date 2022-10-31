@@ -1,13 +1,13 @@
 def data_preparation(list_data: list):
-	result = []
-	for i in list_data:
-		if len(i) >2:
-			i.remove(max(i))
-			i.remove(min(i))
-			result.extend(i)
+	list_data_new = []
+	for data in list_data:
+		if len(data) >2:
+			data.remove(max(data))
+			data.remove(min(data))
+			list_data_new.extend(data)
 		else:
-			result.extend(i)
-	return sorted(result, reverse=True)
+			list_data_new.extend(data)
+	return sorted(list_data_new, reverse=True)
 
 
 
