@@ -1,5 +1,18 @@
 from collections import UserDict
 
+def try_error_decorator(func):
+    def inner(*user_data):
+        try:
+            return func(*user_data)
+        except IndexError:
+            print(f"Index Error with {user_data[1:]}")
+        except KeyError:
+            print(f"I cant find user with name '{user_data[1]}'")
+        except ValueError:
+            print(f"'{user_data[2]}' is not a phone number")
+    return inner
+
+
 class AdressBook(UserDict):
 
     def add_record(self, user):
@@ -13,17 +26,21 @@ class Record:
         self.phones = Phone
         self.emails = Emails
 
-    def delete_phone(self, number):
-        self.phones.value.remove((number))
+    @try_error_decorator
+    def delete_phone(self, which):
+        del self.phones.value[which]
 
-    def delete_email(self, email):
-        self.emails.value.remove(email)
+    @try_error_decorator
+    def delete_email(self, which):
+        del self.emails.value[which]
 
-    def add_phone(self, number):
-        self.phones.value.append(number)
+    @try_error_decorator
+    def add_or_change_phone(self, which, number):
+        self.phones.value[which] = int(number)
 
-    def add_email(self, email):
-        self.emails.value.append(email)
+    @try_error_decorator
+    def add_or_change_email(self, which, email):
+        self.emails.value[which] = email
 
 
 class Field(Record):
@@ -34,17 +51,30 @@ class Name(Field):
         self.value = name
 
 class Phone(Field):
-    value = []
+    value = {}
 
 class Emails(Field):
-    value = []
+    value = {}
 
 
-stas = Record('Stas')
-stas.add_phone("0500801492")
-stas.add_email("new_check@gmail.com")
 
-book = AdressBook()
-print(book)
-book.add_record(stas)
-print(book)
+# book = AdressBook()
+# stas = Record('Stas')
+# stas.add_or_change_phone("job", "0500801492")
+# stas.add_or_change_email("job", "new_check@gmail.com")
+# stas.add_or_change_phone("home", "0500801492")
+# stas.add_or_change_phone("new", "asd")
+# stas.add_or_change_email("home", "new_check@gmail.com")
+# stas.delete_phone("job")
+# stas.delete_email("home")
+# book.add_record(stas)
+# dima = Record("Dima")
+# dima.add_or_change_phone("job", "0500801492")
+# dima.add_or_change_email("job", "new_check@gmail.com")
+# dima.add_or_change_phone("home", "0500801492")
+# dima.add_or_change_email("home", "new_check@gmail.com")
+# stas.delete_phone("home")
+# stas.delete_email("job")
+# book.add_record(dima)
+# print(book)
+# stas.delete_email("asd")
