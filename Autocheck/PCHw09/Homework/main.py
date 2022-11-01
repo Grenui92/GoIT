@@ -26,18 +26,18 @@ def main():
 
 @input_error
 def get_functional(command: str):
-    a = commands[command]
-    return a
+    signature = commands[command]
+    return signature
 
 
 @input_error
 def refactor_user_text(user_text: str) -> list:
-    split_text = user_text.split()
+    splited_text = user_text.split()
     #На случай если команада состоит из двух слов через пробел. Такие команды начинаются с трех конкретных слов.
-    if split_text[0].lower() in ("show", "good", "more"):
-        return [" ".join(split_text[:2]).lower(), split_text[2:]]
+    if splited_text[0].lower() in ("show", "good", "more"):
+        return [" ".join(splited_text[:2]).lower(), splited_text[2:]]
     else:
-        return [split_text[0].lower(), split_text[1:]]
+        return [splited_text[0].lower(), splited_text[1:]]
 
 
 @input_error
