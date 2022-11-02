@@ -58,34 +58,27 @@ class Emails(Field):
 
 
 
-book = AdressBook()
-stas = Record('Stas')
-stas.add_or_change_phone("job", "380500801492")
-stas.add_or_change_email("job", "new_check@gmail.com")
-stas.add_or_change_phone("home", "380500801492")
-stas.add_or_change_phone("new", "asd")
-stas.add_or_change_email("home", "new_check@gmail.com")
-stas.delete_phone("job")
-stas.delete_email("home")
-book.add_record(stas)
-dima = Record("Dima")
-dima.add_or_change_phone("job", "380500801492")
-dima.add_or_change_email("job", "new_check@gmail.com")
-dima.add_or_change_phone("home", "380500801492")
-dima.add_or_change_email("home", "new_check@gmail.com")
-stas.delete_phone("home")
-stas.delete_email("job")
-book.add_record(dima)
-print(book)
-stas.delete_email("asd")
-print(book["Stas"].phones.value)
+# book = AdressBook()
+# stas = Record('Stas')
+# stas.add_or_change_phone("job", "0500801492")
+# stas.add_or_change_email("job", "new_check@gmail.com")
+# stas.add_or_change_phone("home", "0500801492")
+# stas.add_or_change_phone("new", "asd")
+# stas.add_or_change_email("home", "new_check@gmail.com")
+# stas.delete_phone("job")
+# stas.delete_email("home")
+# book.add_record(stas)
+# dima = Record("Dima")
+# dima.add_or_change_phone("job", "0500801492")
+# dima.add_or_change_email("job", "new_check@gmail.com")
+# dima.add_or_change_phone("home", "0500801492")
+# dima.add_or_change_email("home", "new_check@gmail.com")
+# stas.delete_phone("home")
+# stas.delete_email("job")
+# book.add_record(dima)
+# print(book)
+# stas.delete_email("asd")
+# print(book["Stas"].name.value)
 
-# def main():
-#     while True:
-#         command = input("Если хотите добавить новый контакт - введите 1\n"
-#                         "Если хотите удалить уже существующий - введите 2\n"
-#                         "Если изменить существующий - введите 3\n"
-#                         "Окончить работу - введите 4\n"
-#                         "Выберите команду: ")
-# if __name__ == "__main__":
-#     main()
+
+
