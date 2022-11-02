@@ -10,7 +10,7 @@ def input_error(func):
         except KeyError:
             return f"KeyError. Данное значение или команда не найдены."
         except ValueError:
-            return  f"'{user_data[1]}' не является телефонным номером. Телефон может содержать только цифры."
+            return f"'{user_data[1]}' не является телефонным номером. Телефон может содержать только цифры."
 
     return inner
 
@@ -31,7 +31,6 @@ def main():
             print(result)
             continue
 
-
         try:
             main_record = book[user_data[0]] if user_data else None
         except KeyError:
@@ -40,7 +39,6 @@ def main():
 
         result = get_functional(command)(main_record, user_data)
 
-
         if result:
             if type(result) is list:
                 print(*result, sep="\n")
@@ -48,11 +46,10 @@ def main():
                 print(result)
 
 
-
-
 @input_error
 def get_functional(command: str):
     """Получение сигнатуры"""
+
     signature = commands[command]
     return signature
 
@@ -70,10 +67,12 @@ def refactor_user_text(user_text: str) -> list:
     else:
         return [splited_text[0].lower(),  splited_text[1:]]
 
+
 @input_error
 def greeting(*_) -> str:
     return "Hello, my dear friend!\n" \
            "How can i help you?\n"
+
 
 @input_error
 def help_me(*_):
@@ -96,6 +95,7 @@ def create_new_contact(user_info, *_):
     else:
         return f"Контакт {name} уже существует."
 
+
 @input_error
 def delete_contact(main_record: Record, *_):
     del book[main_record.name.value]
@@ -104,16 +104,18 @@ def delete_contact(main_record: Record, *_):
 
 @input_error
 def add_number(main_record: Record, user_info: list):
-     return main_record.add_phone(int(user_info[1]))
+    return main_record.add_phone(int(user_info[1]))
 
 
 @input_error
 def change_number(main_record: Record, user_info: list):
     return main_record.edit_phone(int(user_info[1]), int(user_info[2]))
 
+
 @input_error
 def delete_phone(main_record: Record, user_info: list):
     return main_record.delete_phone(int(user_info[1]))
+
 
 @input_error
 def show_phones(new_record: Record, *_) -> str:
@@ -126,7 +128,6 @@ def show_all(*_):
     for contact_name, numbers in book.items():
         full_list.append(f"{contact_name} содержит такие номера телефонов: {[v.value for v in numbers.phones]}")
     return full_list
-
 
 
 @input_error
@@ -146,7 +147,7 @@ commands = {"hello": greeting,
             "good bye": go_away,
             "close": go_away,
             "exit": go_away,
-            ".":go_away
+            ".": go_away
             }
 if __name__ == "__main__":
     book = AdressBook()
