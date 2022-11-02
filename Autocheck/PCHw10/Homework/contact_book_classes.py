@@ -9,7 +9,7 @@ class AdressBook(UserDict):
         del self.data[old]
         return f"Имя {old} успешно изменено на {new_name}."
 
-    def create_contact(self, name):
+    def add_record(self, name):
         self.data[name] = Record(name)
 
 
