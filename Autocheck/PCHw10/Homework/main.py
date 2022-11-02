@@ -7,8 +7,8 @@ def input_error(func):
             return func(*user_data)
         except IndexError:
             return "Получено недостаточно информации. Проверьте корректность ввода."
-        except KeyError:
-            return f"KeyError. Данное значение или команда не найдены."
+        # except KeyError:
+        #     return f"KeyError. Данное значение или команда не найдены."
         except ValueError:
             return f"'{user_data[1]}' не является телефонным номером. Телефон может содержать только цифры."
 
@@ -61,7 +61,7 @@ def refactor_user_text(user_text: str) -> list:
     if not user_text:
         return ['', '']
     splited_text = user_text.split()
-    # На случай если команда состоит из двух слов через пробел. Такие команды начинаются с нескольких конкретных слов.
+
     if splited_text[0].lower() in ("show", "good", "delete"):
         return [" ".join(splited_text[:2]).lower(), splited_text[2:]]
     else:
@@ -76,13 +76,16 @@ def greeting(*_) -> str:
 
 @input_error
 def help_me(*_):
-    return "Команды, которые вы можете использовать: (X / Y в указанных команда = место для ввода пользователя)\n"\
-          "'add X Y': Добавляет к записи пользователя X номер телефона Y.\n"\
-          "'change X Y V': Заменяет для пользователя X номер телефона Y на номер телефона V.\n"\
-          "'delete contact Х': Полностью удаляет контакт Х из записной книги.\n" \
-          "'show phones X': Показывает все номера телефонов пользователя X.\n"\
-          "'show all': Показывает всех пользователей что есть в записной книге и их номера телефонов."\
-          "'good bye/close/exit/.': Выход из программы.\n"
+    return "Команды, которые вы можете использовать: (X / Y в указанных команда = место для ввода пользователя)\n" \
+           "'Hello': Скажи привет, мой дорогой." \
+           "'create Х': Создает новый контакт Х." \
+           "'edit': Изменить имя аккаунта X на Y."\
+           "'add X Y': Добавляет к записи пользователя X номер телефона Y.\n"\
+           "'change X Y V': Заменяет для пользователя X номер телефона Y на номер телефона V.\n"\
+           "'delete contact Х': Полностью удаляет контакт Х из записной книги.\n" \
+           "'show phones X': Показывает все номера телефонов пользователя X.\n"\
+           "'show all': Показывает всех пользователей что есть в записной книге и их номера телефонов."\
+           "'good bye/close/exit/.': Выход из программы.\n"
 
 
 @input_error
@@ -94,6 +97,10 @@ def create_new_contact(user_info, *_):
         return f"Создан контакт {name}"
     else:
         return f"Контакт {name} уже существует."
+
+@input_error
+def edit_contact(old_name, new_name):
+    return book.change_contact_name(old_name, new_name[1])
 
 
 @input_error
@@ -138,6 +145,7 @@ def go_away(*_):
 commands = {"hello": greeting,
             "help": help_me,
             "create": create_new_contact,
+            "edit": edit_contact,
             "delete contact": delete_contact,
             "add": add_number,
             "change": change_number,

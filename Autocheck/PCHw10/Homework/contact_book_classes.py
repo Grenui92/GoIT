@@ -2,6 +2,13 @@ from collections import UserDict
 
 
 class AdressBook(UserDict):
+
+    def change_contact_name(self, old_name, new_name: str):
+        old = old_name.name.value
+        self.data[new_name], self.data[old_name.name.value].name.value = self.data[old_name.name.value], new_name
+        del self.data[old]
+        return f"Имя {old} успешно изменено на {new_name}."
+
     def create_contact(self, name):
         self.data[name] = Record(name)
 
