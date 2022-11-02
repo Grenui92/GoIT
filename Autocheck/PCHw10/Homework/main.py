@@ -1,4 +1,6 @@
 from contact_book_classes import AdressBook, Record
+
+
 def input_error(func):
     def inner(*user_data):
         try:
@@ -9,6 +11,7 @@ def input_error(func):
             print(f"KeyError. Данное значение или команда не найдены.")
         except ValueError:
             print(f"'{user_data[1]}' не является телефонным номером. Телефон может содержать только цифры.")
+
     return inner
 
 
@@ -22,12 +25,12 @@ def main():
           "'show phone X': Показывает один номер телефона X('job/home/own') текущего пользователя.\n"
           "'show all': Показывает все номера телефонов пользователя который выбран в данный момент.\n"
           "'good bye/close/exit': Выход из программы.\n"
-    )
+          )
     while True:
 
         user_text = input()
         command, user_data = refactor_user_text(user_text)
-        if command in  ("create contact", "choice contact"): # Создаем или выбираем контакт с которым будем работать.
+        if command in ("create contact", "choice contact"):  # Создаем или выбираем контакт с которым будем работать.
             new_record = get_functional(command)(user_data[0])
         else:
             try:
@@ -42,7 +45,7 @@ def main():
             print(f"На данный момент мы работает с пользователем {new_record.name.value}.\n"
                   f"Не забывайте сохранять данные с помощью команды save в адресную книгу перед сменой пользователя или завершением работы, иначе данные будут "
                   f"утеряны.")
-        except:
+        except AttributeError:
             print(f"Не удалось найти пользователя {user_data[0]}. Возможно вы не сохранили данные или не корректно ввели имя.")
 
 
@@ -67,14 +70,17 @@ def greeting(*_) -> str:
     return "Hello, my dear friend!\n" \
            "How can i help you?\n"
 
+
 @input_error
 def create_new_contact(name):
     return Record(name)
+
 
 @input_error
 def choice_user(name):
     user = book[name]
     return user
+
 
 @input_error
 def add_number(new_record: Record, user_info: list):
@@ -84,6 +90,7 @@ def add_number(new_record: Record, user_info: list):
 @input_error
 def change(new_record: Record, user_info: list):
     new_record.add_or_change_phone(user_info[0], user_info[1])
+
 
 @input_error
 def save_to_book(new_record, *_):
