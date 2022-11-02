@@ -16,16 +16,8 @@ def input_error(func):
 
 
 def main():
-    print("Команды, которые вы можете использовать: (X / Y в указанных команда = место для ввода пользователя)\n"
-          "'add X Y': Добавляет к записи пользователя X номер телефона Y.\n"
-          "'change X Y V': Заменяет для пользователя X номер телефона Y на номер телефона V.\n"
-          "'delete contact Х': Полностью удаляет контакт Х из записной книги.\n" 
-          "'show phones X': Показывает все номера телефонов пользователя X.\n"
-          "'show all': Показывает всех пользователей что есть в записной книге и их номера телефонов."
-          "'good bye/close/exit': Выход из программы.\n"
-          )
+    print("Чтоб посмотреть команды введите 'help'")
     while True:
-        print(book)
         user_text = input()
         command, user_data = refactor_user_text(user_text)
         if command not in commands:
@@ -67,6 +59,16 @@ def greeting(*_) -> str:
     return "Hello, my dear friend!\n" \
            "How can i help you?\n"
 
+@input_error
+def help_me(*_):
+    return "Команды, которые вы можете использовать: (X / Y в указанных команда = место для ввода пользователя)\n"\
+          "'add X Y': Добавляет к записи пользователя X номер телефона Y.\n"\
+          "'change X Y V': Заменяет для пользователя X номер телефона Y на номер телефона V.\n"\
+          "'delete contact Х': Полностью удаляет контакт Х из записной книги.\n" \
+          "'show phones X': Показывает все номера телефонов пользователя X.\n"\
+          "'show all': Показывает всех пользователей что есть в записной книге и их номера телефонов."\
+          "'good bye/close/exit/.': Выход из программы.\n"\
+
 
 @input_error
 def delete_contact(main_record: Record, *_):
@@ -107,6 +109,7 @@ def go_away(*_):
 
 
 commands = {"hello": greeting,
+            "help": help_me,
             "delete contact": delete_contact,
             "add": add_number,
             "change": change_number,
@@ -115,7 +118,8 @@ commands = {"hello": greeting,
             "show all": show_all,
             "good bye": go_away,
             "close": go_away,
-            "exit": go_away
+            "exit": go_away,
+            ".":go_away
             }
 if __name__ == "__main__":
     book = AdressBook()
