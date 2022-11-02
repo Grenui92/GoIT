@@ -6,11 +6,11 @@ def input_error(func):
         try:
             return func(*user_data)
         except IndexError:
-            print("Получено недостаточно информации. Проверьте корректность ввода.")
+            return "Получено недостаточно информации. Проверьте корректность ввода."
         except KeyError:
-            print(f"KeyError. Данное значение или команда не найдены.")
+            return f"KeyError. Данное значение или команда не найдены."
         except ValueError:
-            print(f"'{user_data[1]}' не является телефонным номером. Телефон может содержать только цифры.")
+            return  f"'{user_data[1]}' не является телефонным номером. Телефон может содержать только цифры."
 
     return inner
 
@@ -26,10 +26,20 @@ def main():
             print(f"Неизвестная команда '{command}'")
             continue
 
-        # Создаем новый контакт в словаре, если контакт с указанным именем еще не существует. Если существует - берем его
-        main_record = book.setdefault(user_data[0], Record(user_data[0])) if user_data else None
-        # В этой части происходит основная обработка команд
-        result = get_functional(command)(main_record, user_data[1:])
+        if command == "create":
+            result = get_functional(command)(user_data)
+            print(result)
+            continue
+
+
+        try:
+            main_record = book[user_data[0]] if user_data else None
+        except KeyError:
+            print(f"Данный контакт {user_data[0]} не найден. Повторите ввод или создайте пользователя командой 'create X' где Х - имя контакта.")
+            continue
+
+        result = get_functional(command)(main_record, user_data)
+
 
         if result:
             if type(result) is list:
@@ -77,6 +87,16 @@ def help_me(*_):
 
 
 @input_error
+def create_new_contact(user_info, *_):
+
+    name = user_info[0]
+    if name not in book:
+        book.create_contact(name)
+        return f"Создан контакт {name}"
+    else:
+        return f"Контакт {name} уже существует."
+
+@input_error
 def delete_contact(main_record: Record, *_):
     del book[main_record.name.value]
     return f"Контакт {main_record.name.value} удален из телефонной книги "
@@ -84,18 +104,16 @@ def delete_contact(main_record: Record, *_):
 
 @input_error
 def add_number(main_record: Record, user_info: list):
-    main_record.add_phone(int(user_info[0]))
-    return f"Номер телефона {user_info[0]} добавлен к пользователю {main_record.name.value}."
+     return main_record.add_phone(int(user_info[1]))
+
 
 @input_error
 def change_number(main_record: Record, user_info: list):
-    main_record.edit_phone(int(user_info[0]), int(user_info[1]))
-    return f"Номер телефона {int(user_info[0])} заменен на номер телефона {int(user_info[1])} для пользователя {main_record.name.value}."
+    return main_record.edit_phone(int(user_info[1]), int(user_info[2]))
 
 @input_error
 def delete_phone(main_record: Record, user_info: list):
-    main_record.delete_phone(int(user_info[0]))
-    return f"Номер телефона {user_info[0]} удален для пользователя {main_record.name.value}."
+    return main_record.delete_phone(int(user_info[1]))
 
 @input_error
 def show_phones(new_record: Record, *_) -> str:
@@ -118,6 +136,7 @@ def go_away(*_):
 
 commands = {"hello": greeting,
             "help": help_me,
+            "create": create_new_contact,
             "delete contact": delete_contact,
             "add": add_number,
             "change": change_number,
