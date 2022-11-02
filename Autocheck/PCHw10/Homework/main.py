@@ -33,7 +33,7 @@ def main():
             continue
         main_record = book.setdefault(user_data[0], Record(user_data[0])) if user_data else None
         result = get_functional(command)(main_record, user_data[1:])
-        if result:
+        if result: #печать для тех случаев когда функция show_all и тп вернули список или строку и его нужно вывести на экран
             if type(result) is list:
                 print(*result, sep="\n")
             else:
@@ -53,6 +53,8 @@ def get_functional(command: str):
 def refactor_user_text(user_text: str) -> list:
     """Обработка введенного пользователем текста и разделение на понятные для программы части"""
 
+    if not user_text:
+        return ['', '']
     splited_text = user_text.split()
     # На случай если команда состоит из двух слов через пробел. Такие команды начинаются с нескольких конкретных слов.
     if splited_text[0].lower() in ("show", "good", "delete"):
