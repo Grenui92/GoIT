@@ -14,18 +14,15 @@ class Record:
 
 
     def delete_phone(self, number):
-        for num, value in enumerate(self.phones):
-            if value.value == number:
-                self.phones.pop(num)
-                break
-        else:
-            print(f"I cant find {number} in user {self.name.value}")
+        for values in self.phones:
+            if values.value == number:
+                self.phones.remove(values)
 
     def edit_phone(self, old_number, new_number):
-        for num, values in enumerate(self.phones):
+        for values in self.phones:
             if values.value == old_number:
                 values.value = new_number
-                break
+
         else:
             print(f"I cant find {old_number} in user {self.name.value}")
 

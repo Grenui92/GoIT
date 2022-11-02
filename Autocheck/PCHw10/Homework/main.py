@@ -18,13 +18,19 @@ def input_error(func):
 def main():
     print("Чтоб посмотреть команды введите 'help'")
     while True:
+
         user_text = input()
         command, user_data = refactor_user_text(user_text)
+
         if command not in commands:
             print(f"Неизвестная команда '{command}'")
             continue
+
+        # Создаем новый контакт в словаре, если контакт с указанным именем еще не существует. Если существует - берем его
         main_record = book.setdefault(user_data[0], Record(user_data[0])) if user_data else None
+        # В этой части происходит основная обработка команд
         result = get_functional(command)(main_record, user_data[1:])
+
         if result:
             if type(result) is list:
                 print(*result, sep="\n")
@@ -67,7 +73,7 @@ def help_me(*_):
           "'delete contact Х': Полностью удаляет контакт Х из записной книги.\n" \
           "'show phones X': Показывает все номера телефонов пользователя X.\n"\
           "'show all': Показывает всех пользователей что есть в записной книге и их номера телефонов."\
-          "'good bye/close/exit/.': Выход из программы.\n"\
+          "'good bye/close/exit/.': Выход из программы.\n"
 
 
 @input_error
