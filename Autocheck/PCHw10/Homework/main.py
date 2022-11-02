@@ -75,33 +75,22 @@ def greeting(*_) -> str:
 
 
 @input_error
-def help_me(*_):
-    return "Команды, которые вы можете использовать: (X / Y в указанных команда = место для ввода пользователя)\n" \
-           "'Hello': Скажи привет, мой дорогой." \
-           "'create Х': Создает новый контакт Х." \
-           "'edit': Изменить имя аккаунта X на Y."\
-           "'add X Y': Добавляет к записи пользователя X номер телефона Y.\n"\
-           "'change X Y V': Заменяет для пользователя X номер телефона Y на номер телефона V.\n"\
-           "'delete contact Х': Полностью удаляет контакт Х из записной книги.\n" \
-           "'show phones X': Показывает все номера телефонов пользователя X.\n"\
-           "'show all': Показывает всех пользователей что есть в записной книге и их номера телефонов."\
-           "'good bye/close/exit/.': Выход из программы.\n"
-
-
-@input_error
 def create_new_contact(user_info, *_):
 
     name = user_info[0]
     if name not in book:
-        book.create_contact(name)
+        book.add_record(name)
         return f"Создан контакт {name}"
     else:
         return f"Контакт {name} уже существует."
 
 
 @input_error
-def edit_contact(old_name, new_name):
-    return book.change_contact_name(old_name, new_name[1])
+def edit_contact(old_name: Record, new_name):
+    if old_name.name.value != new_name[1]:
+        return book.change_contact_name(old_name, new_name[1])
+    else:
+        return f"Старое имя {old_name.name.value} такое же как то, на которое вы хотите изменить - {new_name[1]}"
 
 
 @input_error
@@ -143,6 +132,22 @@ def go_away(*_):
     exit("Bye. See you soon.")
 
 
+@input_error
+def help_me(*_):
+    return "Команды, которые вы можете использовать: (X / Y в указанных команда = место для ввода пользователя)\n" \
+           "'hello': Скажи привет, мой дорогой.\n" \
+           "'help': Список команд.\n" \
+           "'create Х': Создает новый контакт Х.\n" \
+           "'edit X Y': Изменить имя контакта X на Y.\n" \
+           "'delete contact X': Удаляет из книги контакт Х.\n"\
+           "'add X Y': Добавляет к записи контакта X номер телефона Y.\n"\
+           "'change X Y V': Заменяет для пользователя X номер телефона Y на номер телефона V.\n"\
+           "'delete phone Х Y': Удаляет для контакта X номер телефона Y.\n" \
+           "'show phones X': Показывает все номера телефонов пользователя X.\n"\
+           "'show all': Показывает всех пользователей что есть в записной книге и их номера телефонов.\n"\
+           "'good bye/close/exit/.': Выход из программы.\n"
+
+
 commands = {"hello": greeting,
             "help": help_me,
             "create": create_new_contact,
@@ -158,6 +163,7 @@ commands = {"hello": greeting,
             "exit": go_away,
             ".": go_away
             }
+
 if __name__ == "__main__":
     book = AdressBook()
     main()
