@@ -25,7 +25,7 @@ def main():
             continue
         main_record = book.setdefault(user_data[0], Record(user_data[0])) if user_data else None
         result = get_functional(command)(main_record, user_data[1:])
-        if result: #печать для тех случаев когда функция show_all и тп вернули список или строку и его нужно вывести на экран
+        if result:
             if type(result) is list:
                 print(*result, sep="\n")
             else:
@@ -73,21 +73,23 @@ def help_me(*_):
 @input_error
 def delete_contact(main_record: Record, *_):
     del book[main_record.name.value]
+    return f"Контакт {main_record.name.value} удален из телефонной книги "
 
 
 @input_error
-def add_number(new_record: Record, user_info: list):
-    new_record.add_phone(int(user_info[0]))
-
+def add_number(main_record: Record, user_info: list):
+    main_record.add_phone(int(user_info[0]))
+    return f"Номер телефона {user_info[0]} добавлен к пользователю {main_record.name.value}."
 
 @input_error
-def change_number(new_record: Record, user_info: list):
-    new_record.edit_phone(int(user_info[0]), int(user_info[1]))
+def change_number(main_record: Record, user_info: list):
+    main_record.edit_phone(int(user_info[0]), int(user_info[1]))
+    return f"Номер телефона {int(user_info[0])} заменен на номер телефона {int(user_info[1])} для пользователя {main_record.name.value}."
 
 @input_error
 def delete_phone(main_record: Record, user_info: list):
     main_record.delete_phone(int(user_info[0]))
-
+    return f"Номер телефона {user_info[0]} удален для пользователя {main_record.name.value}."
 
 @input_error
 def show_phones(new_record: Record, *_) -> str:
