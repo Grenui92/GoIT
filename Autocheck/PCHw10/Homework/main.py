@@ -98,6 +98,7 @@ def create_new_contact(user_info, *_):
     else:
         return f"Контакт {name} уже существует."
 
+
 @input_error
 def edit_contact(old_name, new_name):
     return book.change_contact_name(old_name, new_name[1])
