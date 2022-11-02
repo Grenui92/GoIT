@@ -46,22 +46,3 @@ class Name(Field):
 
 class Phone(Field):
     pass
-
-
-
-
-book = AdressBook()
-stas = Record('Stas')
-stas.add_phone("555")
-stas.add_phone("asd")
-stas.add_phone("111")
-stas.delete_phone("asd")
-stas.edit_phone("555", "aaa")
-stas.edit_phone("qwe", "777")
-for cl in stas.phones:
-    print(cl.value)
-
-print(stas.phones)
-
-
-
