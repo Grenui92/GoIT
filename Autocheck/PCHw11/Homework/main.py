@@ -38,7 +38,7 @@ def main():
         result = get_functional(command)(main_record, user_data)
 
         if result:
-            if type(result) is list:
+            if isinstance(result, list):
                 print(*result, sep="\n")
             else:
                 print(result)
@@ -145,7 +145,8 @@ def show_pages(n, *_):
     for page_set in book.iterator(count=cnt):
         result += f"Page {page}\n"
         for record in page_set:
-            result += f"\tName: {record.name.value}. Phones: {[i.value for i in record.phones]}. Birthday: {record.birthday.value}\n"
+            result += f"\tName: {record.name.value}. Phones: {[i.value for i in record.phones]}. Birthday: " \
+                      f"{record.birthday.value if record.birthday else None}\n"
         page += 1
     return result
 
@@ -205,4 +206,13 @@ commands = {"hello": greeting,
 
 if __name__ == "__main__":
     book = AdressBook()
+    book.add_record('aaa')
+    book.add_record('aaqwea')
+    book.add_record('aasqaa')
+    book.add_record('aaaqw')
+    book.add_record('aaaczxc')
+    book.add_record('1111')
+    book.add_record('2222')
+    book.add_record('3333')
+    book.add_record('444')
     main()

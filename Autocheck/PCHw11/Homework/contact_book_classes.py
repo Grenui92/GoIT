@@ -37,7 +37,7 @@ class Record:
     def __init__(self, name, phone=None, birthday=None):
         self.name = Name(name)
         self.phones = [Phone(phone)] if phone else []
-        self.birthday = Birthday(birthday)
+        self.birthday = Birthday(birthday) if birthday else None
 
     def delete_phone(self, number):
         """Вносит изменения в класс, удаляет запись Рекорд, содержащую конкретный номер. Возвращает ответ об успешности/ошибке операции."""
@@ -45,12 +45,11 @@ class Record:
             number = int(number)
         except ValueError:
             return f"Номер телефона {number} состоит не только из цифр."
-        for values in self.phones:
-            if values.value == number:
-                self.phones.remove(values)
-                return f"Номер телефона {number} удален для пользователя {self.name._value}."
-        else:
-            return f"Я не могу найти {number} у контакта {self.name._value}"
+        for phone in self.phones:
+            if phone.value == number:
+                self.phones.remove(phone)
+                return f"Номер телефона {number} удален для пользователя {self.name.value}."
+        return f"Я не могу найти {number} у контакта {self.name.value}."
 
     def edit_phone(self, old_number, new_number):
         """Вносит изменения в класс, изменяет у записи Рекорд, содержащую конкретный номер на новый. Так же проверяет на интование."""
@@ -59,25 +58,24 @@ class Record:
             old_number, b = int(old_number), int(new_number)
         except ValueError:
             return f"Один из номеров телефона {old_number, new_number} состоит не только из цифр."
-        for values in self.phones:
-            if values.value == old_number:
-                values.value = new_number
+        for phone in self.phones:
+            if phone.value == old_number:
+                phone.value = new_number
                 return f"Номер телефона {old_number} заменен на номер телефона {new_number} для пользователя {self.name.value}."
-        else:
-            return f"Я не могу найти {old_number} у контакта {self.name.value}"
+        return f"Я не могу найти {old_number} у контакта {self.name.value}."
 
     def add_phone(self, number):
         """Вносит изменения в класс, изменяет поле phones, добавляя номер телефона. Возвращает ответ об успешности операции. Тут же проверка на интовнаие
         введенных данных. Если нужно, тут же можно воткнуть и проверку на соответствие формату (длинна, коды и тд)."""
 
         self.phones.append(Phone(number))
-        return f"Succes add phone {self.name.value}"
+        return f"Успешно добавлен номер телефона {self.name.value} контакту {self.name.value}"
 
     def set_birthday(self, birthdays_data):
         """Устанавливаем дату рождения. Тут же происходит и проверка на формат ввода. Ожидается yyyy.mm.dd."""
 
         self.birthday = Birthday(birthdays_data)
-        return f"Succes set birthday date {self.birthday.value} to {self.name.value}"
+        return f"Успешно установлена дата рождения {self.birthday.value} контакту {self.name.value}."
 
     def days_to_birthday(self):
         """Вычисляет количество дней до предстоящего дня рождения."""
@@ -114,25 +112,22 @@ class Phone(Field):
     @Field.value.setter
     def value(self, value):
         if not value.isnumeric():
-            raise ValueError("Wrong phones.")
+            raise ValueError("Номер состоит не только из цифр.")
         self._value = int(value)
 
 
 class Birthday(Field):
     @Field.value.setter
     def value(self, new_value: str):
-        if not new_value:
-            self._value = "Without data"
-            return
         try:
             new_value = [int(i) for i in new_value.split(".")]
             birthday_date = date(*new_value)
         except ValueError:
-            raise ValueError("Wrong date format. Expected only numbers.")
+            raise ValueError("Не верный формат даты. Ожидаются только цифры в формате гггг.мм.дд.")
         except TypeError:
-            raise ValueError("Wrong date format. Expected yyyy.mm.dd only.")
+            raise ValueError("Не верный формат даты. Ожидаются только цифры в формате гггг.мм.дд.")
 
         if birthday_date <= date.today():
             self._value = birthday_date
         else:
-            raise ValueError("Birthday must be less than current date.")
+            raise ValueError("День рождения должен уже состояться, а не планироваться в каком-то будущем. Мы же не Боги, чтоб предвидеть это.")
