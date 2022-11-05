@@ -7,8 +7,8 @@ def input_error(func):
             return func(*user_data)
         except IndexError:
             return "Получено недостаточно информации. Проверьте корректность ввода."
-        except AttributeError:
-            return  f"У контакта {user_data[0].name.value} не указан день рождения"
+        except ValueError as exception:
+            return exception.args[0]
 
     return inner
 
@@ -24,7 +24,7 @@ def main():
             print(f"Неизвестная команда '{command}'")
             continue
 
-        if command == "create":
+        if command in ("create", "show pages"):
             result = get_functional(command)(user_data)
             print(result)
             continue
@@ -132,6 +132,24 @@ def birthday_difference(main_record: Record, *_):
     return f"До дня рождения контакта {main_record.name.value} осталось {main_record.days_to_birthday()} дней."
 
 @input_error
+def show_pages(n, *_):
+
+    page = 1
+    result = ""
+
+    try:
+        cnt = int(n[0]) if n else 5
+    except ValueError:
+        raise ValueError(f"{n[0]} is not a number.")
+
+    for page_set in book.iterator(count=cnt):
+        result += f"Page {page}\n"
+        for record in page_set:
+            result += f"\tName: {record.name.value}. Phones: {[i.value for i in record.phones]}. Birthday: {record.birthday.value}\n"
+        page += 1
+    return result
+
+@input_error
 def show_all(*_):
     full_list = []
     for contact_name, numbers in book.items():
@@ -157,7 +175,10 @@ def help_me(*_):
            "'delete phone Х Y': Удаляет для контакта X номер телефона Y.\n" \
            "'show phones X': Показывает все номера телефонов пользователя X.\n"\
            "'show all': Показывает всех пользователей что есть в записной книге и их номера телефонов.\n" \
+           "'show pages X': Показывает все контакты содержащиеся в книге по X записей на странице (не обязательно для указания, по умолчанию X = 5. \n" \
            "'birthday X Y': Указывает для контакта Х день рождения Y в формате гггг.мм.дд\n" \
+           "'show birthday X': Показывает дату рождения для контакта Х. \n" \
+           "'difference X': Показывает сколько дней осталось до ближайшего дня рождения контакта Х.\n" \
            "'show birthday X': Выводит данные о дне рождения для контакта X.\n"\
            "'good bye/close/exit/.': Выход из программы.\n"
 
@@ -172,6 +193,7 @@ commands = {"hello": greeting,
             "delete phone": delete_phone,
             "show phones": show_phones,
             "show all": show_all,
+            "show pages": show_pages,
             "birthday": set_birthday,
             "show birthday": show_birthday,
             "difference": birthday_difference,
