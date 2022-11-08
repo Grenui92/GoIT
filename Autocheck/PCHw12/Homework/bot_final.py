@@ -233,12 +233,11 @@ commands = {"hello": greeting,
             }
 
 if __name__ == "__main__":
+    book = AdressBook()
     try:
-        book = AdressBook()
         book.load_from_file()
         print("Контактная книга успешно загружена.")
     except FileNotFoundError:
-        book = AdressBook()
         print("Файл сохранения адресной книги не найден. Файл будет создан. Будет создана новая контактная книга.")
 
 
