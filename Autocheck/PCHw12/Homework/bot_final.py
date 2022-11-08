@@ -24,9 +24,9 @@ def main():
             print(f"Неизвестная команда '{command}'")
             continue
 
-        if command in ("create", "show pages"):
+        if command in ("create", "show pages", "search"):
             result = get_functional(command)(user_data)
-            print(result)
+            print_results(result)
             continue
 
         try:
@@ -37,12 +37,15 @@ def main():
 
         result = get_functional(command)(main_record, user_data)
 
-        if result:
-            if isinstance(result, list):
-                print(*result, sep="\n")
-            else:
-                print(result)
+        print_results(result)
 
+
+def print_results(result):
+    if result:
+        if isinstance(result, list):
+            print(*result, sep="\n")
+        else:
+            print(result)
 
 @input_error
 def get_functional(command: str):
@@ -75,7 +78,7 @@ def greeting(*_) -> str:
 @input_error
 def create_new_contact(user_info, *_):
 
-    name = user_info[0]
+    name = ' '.join(user_info)
     if name not in book:
         book.add_record(name)
         return f"Создан контакт {name}"
@@ -109,7 +112,7 @@ def change_number(main_record: Record, user_info: list):
 
 @input_error
 def delete_phone(main_record: Record, user_info: list):
-    return main_record.delete_phone(int(user_info[1]))
+    return main_record.delete_phone(user_info[1])
 
 
 @input_error
@@ -149,6 +152,10 @@ def show_pages(n, *_):
                       f"{record.birthday.value if record.birthday else None}\n"
         page += 1
     return result
+
+@input_error
+def search(value, *_):
+    return book.search_in_contact_book(value[0])
 
 @input_error
 def show_all(*_):
@@ -200,6 +207,7 @@ commands = {"hello": greeting,
             "show phones": show_phones,
             "show all": show_all,
             "show pages": show_pages,
+            "search": search,
             "birthday": set_birthday,
             "show birthday": show_birthday,
             "difference": birthday_difference,
@@ -214,9 +222,10 @@ if __name__ == "__main__":
     try:
         book = AdressBook()
         book = book.load_from_file()
-        print("Файл contact_book.bin найден. Контактная книга загружена из него.")
+        print("Файл сохранения найден. Контактная книга загружена из него.")
     except:
+        print("Файл сохранения адресной книги не найден. Файл будет создан. Будет оздана новая контактная книга.")
         book = AdressBook()
-        print("Файл contact_book.bin не найден. Файл будет создан. Создана новая контактная книга.")
+
 
     main()

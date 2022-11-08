@@ -19,16 +19,13 @@ class AdressBook(UserDict):
         self.data[name] = Record(name)
 
     def iterator(self, count):
-        page = []
-        i = 0
-
+        page, i = [], 0
         for record in self.data.values():
             page.append(record)
             i += 1
             if i == count:
                 yield page
-                page = []
-                i = 0
+                page, i = [], 0
         if page:
             yield page
 
@@ -42,6 +39,17 @@ class AdressBook(UserDict):
             result = pickle.load(file)
         return result
 
+    def search_in_contact_book(self, search):
+        result = []
+        for key, record in self.data.items():
+            if search in key:
+                result.append(f"Запрашиваемая комбинация {search} найдена в имени контакта {key}.")
+            for numbers in record.phones:
+                if search in numbers.value:
+                    result.append(f"Запрашиваемая комбинация {search} найдена в номере телефона {numbers.value} контакта {key}.")
+        return result
+
+
 class Record:
     """Класс, в котором хранится весь контакт - список номеров, дата рождения, имя. Имя при создании объекта обязательно. Номера телефонов - список объектов
     класса Record. День рождения только в одном экземпляре, не обязателен для ввода, по умолчанию None."""
@@ -51,11 +59,9 @@ class Record:
         self.phones = [Phone(phone)] if phone else []
         self.birthday = Birthday(birthday) if birthday else None
 
-    def delete_phone(self, number):
+    def delete_phone(self, number: str):
         """Вносит изменения в класс, удаляет запись Рекорд, содержащую конкретный номер. Возвращает ответ об успешности/ошибке операции."""
-        try:
-            number = int(number)
-        except ValueError:
+        if not number.isnumeric():
             return f"Номер телефона {number} состоит не только из цифр."
         for phone in self.phones:
             if phone.value == number:
@@ -63,12 +69,10 @@ class Record:
                 return f"Номер телефона {number} удален для пользователя {self.name.value}."
         return f"Я не могу найти {number} у контакта {self.name.value}."
 
-    def edit_phone(self, old_number, new_number):
+    def edit_phone(self, old_number: str, new_number: str):
         """Вносит изменения в класс, изменяет у записи Рекорд, содержащую конкретный номер на новый. Так же проверяет на интование."""
 
-        try:
-            old_number, b = int(old_number), int(new_number)
-        except ValueError:
+        if not old_number.isnumeric() or not new_number.isnumeric():
             return f"Один из номеров телефона {old_number, new_number} состоит не только из цифр."
         for phone in self.phones:
             if phone.value == old_number:
@@ -81,7 +85,7 @@ class Record:
         введенных данных. Если нужно, тут же можно воткнуть и проверку на соответствие формату (длинна, коды и тд)."""
 
         self.phones.append(Phone(number))
-        return f"Успешно добавлен номер телефона {self.name.value} контакту {self.name.value}"
+        return f"Успешно добавлен номер телефона {number} контакту {self.name.value}"
 
     def set_birthday(self, birthdays_data):
         """Устанавливаем дату рождения. Тут же происходит и проверка на формат ввода. Ожидается yyyy.mm.dd."""
@@ -125,7 +129,7 @@ class Phone(Field):
     def value(self, value):
         if not value.isnumeric():
             raise ValueError("Номер состоит не только из цифр.")
-        self._value = int(value)
+        self._value = value
 
 
 class Birthday(Field):
