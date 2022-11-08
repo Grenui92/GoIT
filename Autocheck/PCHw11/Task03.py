@@ -12,7 +12,7 @@ class Point:
     @x.setter
     def x(self, x):
         if type(x) in (int, float):
-            self.y = x
+            self.__x = x
     @property
     def y(self):
         return self.__y
@@ -20,5 +20,9 @@ class Point:
     @y.setter
     def y(self, y):
         if type(y) in (int, float):
-            self.y = y
+            self.__y = y
 
+asd = Point(5, 10)
+print()
+print(asd.x)
+print(asd.y)

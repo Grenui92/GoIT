@@ -51,3 +51,5 @@ class Name(Field):
 
 class Phone(Field):
     pass
+stas = Record("Stas", phone=8050)
+print(stas.phones)

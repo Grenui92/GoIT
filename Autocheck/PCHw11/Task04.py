@@ -36,12 +36,12 @@ class Vector:
 
     def __getitem__(self, index):
         if index == 1:
-            return self.coordinates.y
+            print("ssss")
         elif index == 0:
-            return self.coordinates.x
+            print("qqqqq")
 
 
 asd = Vector(Point(1, 10))
-asd[0] = 11
+asd[5] = 11
 print(type(asd.coordinates))
-print(asd.coordinates.x)
+print(asd[1])

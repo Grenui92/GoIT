@@ -33,7 +33,7 @@ def get_functional(command: str):
 @input_error
 def refactor_user_text(user_text: str) -> list:
     splited_text = user_text.split()
-    #На случай если команада состоит из двух слов через пробел. Такие команды начинаются с трех конкретных слов.
+    # На случай если команда состоит из двух слов через пробел. Такие команды начинаются с трех конкретных слов.
     if splited_text[0].lower() in ("show", "good", "more"):
         return [" ".join(splited_text[:2]).lower(), splited_text[2:]]
     else:

@@ -1,23 +1,25 @@
 class Point:
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
-        self.__x = x
-        self.__y = y
+    def __init__(self):
+        self.__x = None
+        self.__y = None
 
+
+    @property
     def x(self):
         return self.__x
 
-    def set_x(self, new_value):
-        self.__x = new_value
+    @x.setter
+    def x(self, x):
+        self.__x = x
 
+    @property
     def y(self):
         return self.__y
 
-    def set_y(self, new_value):
-        self.__y = new_value
+    @y.setter
+    def y(self, y):
+        self.__y = y
 
 
-asd = Point(5, 10)
-print(asd.x())
-print(asd.y())
+asd = Point()
+asd.y = 11
