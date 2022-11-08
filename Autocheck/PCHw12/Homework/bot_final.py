@@ -166,7 +166,20 @@ def show_all(*_):
 
 @input_error
 def save_contact_book(*_):
-    return book.save_to_file()
+    sure = input("Осторожно. Все внесенные изменения будут сохранены и перезаписаны. Вы уверены? Y/N : ")
+    if sure == "Y":
+        return book.save_to_file()
+    else:
+        return f"Вы ввели {sure}. Сохранение отменено."
+
+
+@input_error
+def load_contact_book(*_):
+    sure = input("Осторожно. Все не сохраненные данные будут утеряны. Вы уверены? Y/N : ")
+    if sure == "Y":
+        return book.load_from_file()
+    else:
+        return f"Вы ввели {sure}. Загрузка отменена."
 
 @input_error
 def go_away(*_):
@@ -212,6 +225,7 @@ commands = {"hello": greeting,
             "show birthday": show_birthday,
             "difference": birthday_difference,
             "save": save_contact_book,
+            "load": load_contact_book,
             "good bye": go_away,
             "close": go_away,
             "exit": go_away,
@@ -221,11 +235,11 @@ commands = {"hello": greeting,
 if __name__ == "__main__":
     try:
         book = AdressBook()
-        book = book.load_from_file()
-        print("Файл сохранения найден. Контактная книга загружена из него.")
-    except:
-        print("Файл сохранения адресной книги не найден. Файл будет создан. Будет оздана новая контактная книга.")
+        book.load_from_file()
+        print("Контактная книга успешно загружена.")
+    except FileNotFoundError:
         book = AdressBook()
+        print("Файл сохранения адресной книги не найден. Файл будет создан. Будет создана новая контактная книга.")
 
 
     main()

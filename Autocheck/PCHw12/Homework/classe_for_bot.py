@@ -31,13 +31,13 @@ class AdressBook(UserDict):
 
     def save_to_file(self):
         with open(self.file_path, "wb") as file:
-            pickle.dump(self, file)
+            pickle.dump(self.data, file)
         return f"Контактная книга успешно сохранена в {self.file_path}"
 
     def load_from_file(self):
         with open(self.file_path, "rb") as file:
-            result = pickle.load(file)
-        return result
+            self.data = pickle.load(file)
+        return f"Контактная книга успешно загружена из {self.file_path}"
 
     def search_in_contact_book(self, search):
         result = []
