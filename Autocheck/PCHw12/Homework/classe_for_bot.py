@@ -5,7 +5,7 @@ import pickle
 
 class AdressBook(UserDict):
 
-    def __init__(self, file_path = "contact_book"):
+    def __init__(self, file_path="contact_book"):
         super().__init__()
         self.file_path = f"{file_path}.bin"
 
@@ -105,6 +105,7 @@ class Record:
             future_birthday = date(year=today.year+1, month=self.birthday.value.month, day=self.birthday.value.day)
             result = (future_birthday - today).days
             return result
+
 
 class Field:
     def __init__(self, value):

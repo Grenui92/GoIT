@@ -44,6 +44,11 @@ def print_results(result):
     if result:
         if isinstance(result, list):
             print(*result, sep="\n")
+        elif isinstance(result, dict):
+            for k, v in result.items():
+                print(k)
+                for record in v:
+                    print(record)
         else:
             print(result)
 
@@ -137,8 +142,7 @@ def birthday_difference(main_record: Record, *_):
 @input_error
 def show_pages(n, *_):
 
-    page = 1
-    result = ""
+    page, result = 1, {}
 
     try:
         cnt = int(n[0]) if n else 5
@@ -146,10 +150,9 @@ def show_pages(n, *_):
         raise ValueError(f"{n[0]} is not a number.")
 
     for page_set in book.iterator(count=cnt):
-        result += f"Page {page}\n"
         for record in page_set:
-            result += f"\tName: {record.name.value}. Phones: {[i.value for i in record.phones]}. Birthday: " \
-                      f"{record.birthday.value if record.birthday else None}\n"
+            result.setdefault(f"Page {page}", []).append(f"\tName: {record.name.value}. Phones: {[i.value for i in record.phones]}. Birthday:"
+                                                        f" {record.birthday.value if record.birthday else None}")
         page += 1
     return result
 
