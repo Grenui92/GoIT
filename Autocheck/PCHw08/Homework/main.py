@@ -35,16 +35,16 @@ def show_days_to_be_blessed(result):
 
 
 test_dicts = [{'name': 'Jhon', 'birthday': datetime(year=1992, month=11, day=8)},
-              {'name': 'Peter', 'birthday': datetime(year=2022, month=11, day=5)},
-              {'name': 'Roland', 'birthday': datetime(year=2008, month=11, day=9)},
+              {'name': 'Peter', 'birthday': datetime(year=2022, month=11, day=12)},
+              {'name': 'Roland', 'birthday': datetime(year=2008, month=11, day=15)},
               {'name': 'Kate', 'birthday': datetime(year=2020, month=11, day=11)},
-              {'name': 'Lili', 'birthday': datetime(year=2022, month=11, day=5)},
-              {'name': 'Rim', 'birthday': datetime(year=2022, month=10, day=31)},
-              {'name': 'Kiti', 'birthday': datetime(year=2022, month=11, day=2)},
-              {'name': 'Toma', 'birthday': datetime(year=2022, month=10, day=31)},
-              {'name': 'Saha', 'birthday': datetime(year=2022, month=11, day=1)},
-              {'name': 'Fila', 'birthday': datetime(year=2022, month=11, day=4)},
-              {'name': 'Sreda', 'birthday': datetime(year=2022, month=11, day=3)}]
+              {'name': 'Lili', 'birthday': datetime(year=2022, month=11, day=16)},
+              {'name': 'Rim', 'birthday': datetime(year=2022, month=10, day=25)},
+              {'name': 'Kiti', 'birthday': datetime(year=2022, month=11, day=13)},
+              {'name': 'Toma', 'birthday': datetime(year=2022, month=10, day=11)},
+              {'name': 'Saha', 'birthday': datetime(year=2022, month=11, day=12)},
+              {'name': 'Fila', 'birthday': datetime(year=2022, month=11, day=17)},
+              {'name': 'Sreda', 'birthday': datetime(year=2022, month=11, day=19)}]
 
 
 if __name__ == "__main__":
