@@ -31,11 +31,14 @@ def edit_information(self, name, data):
 
 
 def edit_contact_information(self, field: str, old: str, new: str) -> str:
-    point = self.__dict__[field]
-    for entry in point:
+    point = self.__dict__[field] #тут у нас в змінній буде зберігатися повністю список телефонів, або адрес, 
+    # або одне значення берсдей, хоча мені з берсдей треба щось допрацювати
+    # бо берсдей же у форматі date може бути.
+    for entry in point: # тут ми вже йдемо по цьому списку
         if old == entry.value:
             if new == "delete": # це мене Віка питала як видалити якесь значення. Це як варіант можна використати
                 self.phones.remove(old)
-            entry.value = new
-            return f"{old} successfully changed to {new}"
+            else:
+                entry.value = new
+                return f"{old} successfully changed to {new}"
     raise KeyError(f"I can't find old value {old}")
