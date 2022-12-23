@@ -1,5 +1,5 @@
 # Приклад команди
-# contact_add_value Stas phone +380501112233
+# contact_add_value Stas phones +380501112233
 # після парсингу мого буде ось так виглядати
 name = "Stas"
 info = ["phone", "+380501112233"]
