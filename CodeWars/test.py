@@ -2,7 +2,7 @@
 # contact_add_value Stas phones +380501112233
 # після парсингу мого буде ось так виглядати
 name = "Stas"
-info = ["phone", "+380501112233"]
+info = ["phones", "+380501112233"]
 
 def add_values(self, name, info):
     record = self.book[name]
