@@ -37,7 +37,7 @@ def edit_contact_information(self, field: str, old: str, new: str) -> str:
     for entry in point: # тут ми вже йдемо по цьому списку
         if old == entry.value:
             if new == "delete": # це мене Віка питала як видалити якесь значення. Це як варіант можна використати
-                self.phones.remove(old)
+                self.phones.remove(entry.value)
             else:
                 entry.value = new
                 return f"{old} successfully changed to {new}"
